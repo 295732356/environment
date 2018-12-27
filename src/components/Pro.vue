@@ -9,16 +9,6 @@
       :value="item.value">
     </el-option>
   </el-select>
-        &nbsp&nbsp&nbsp站点：
-    <el-cascader :options="NationName" v-model="selectedNationName" @change="handleChange"></el-cascader>
-        &nbsp&nbsp选择日期：
-    <el-date-picker
-      v-model="value6"
-      type="daterange"
-      range-separator="至"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期">
-    </el-date-picker>
         
        <el-button>搜索</el-button>
 
@@ -53,14 +43,6 @@
         <td>{{ pro.time }}</td>
         <td>{{ pro.city }}</td>
       </tr>
-      <tr align="center">
-        <td colspan = "12">
-        <el-pagination
-          layout="prev, pager, next"
-          :total="ProAirData.length">
-        </el-pagination>
-        </td>
-      </tr>
 
     </table>
   </div>
@@ -71,12 +53,17 @@ export default {
   name: 'Pro',
   data () {
     return {
-     ProAirData: []
-
-    }
-  },
+     ProAirData: [],
+     downloadLoading:false,
+     Citys: [{
+          value: 'hefei',
+          label: '合肥'
+        }],
+        value: ''
+        }
+      },
   methods:{
-         handleDownload() {
+         handleDownloadPro() {
          var date = new Date();
         this.downloadLoading = true
         require.ensure([], () => {
@@ -98,7 +85,6 @@ export default {
   this.$axios.post(url)
   .then(res =>{
   this.ProAirData = res.data.content;
-  console.log(res.data.ProAir);
   
   })
   .catch(error =>{

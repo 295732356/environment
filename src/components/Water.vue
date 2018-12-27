@@ -9,16 +9,7 @@
       :value="item.value">
     </el-option>
   </el-select>
-        &nbsp&nbsp&nbsp站点：
-    <el-cascader :options="NationName" v-model="selectedNationName" @change="handleChange"></el-cascader>
-        &nbsp&nbsp选择日期：
-    <el-date-picker
-      v-model="value6"
-      type="daterange"
-      range-separator="至"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期">
-    </el-date-picker>
+        
         
        <el-button>搜索</el-button>
 
@@ -45,15 +36,6 @@
        <td>{{water.ph}}</td>
        <td>{{water.city}}</td>
       </tr>
-      <tr align="center">
-        <td colspan = "8">
-        <el-pagination
-          :page-size="pagesize"   
-          layout="prev, pager, next"
-          :total="Waters.length">
-        </el-pagination>
-        </td>
-      </tr>
     </table>
   </div>
 </template>
@@ -63,12 +45,17 @@ export default {
   name: 'Water',
   data () {
     return {
-     Waters: []
-     
+     Waters: [],
+     downloadLoading:false,
+     Citys: [{
+          value: 'hefei',
+          label: '合肥'
+        }],
+        value: ''     
     }
   },
   methods:{
-         handleDownload() {
+         handleDownloadWater() {
          var date = new Date();
         this.downloadLoading = true
         require.ensure([], () => {
@@ -77,7 +64,7 @@ export default {
           const filterVal = ['name', 'lv', 'time', 'o2', 'kmn', 'no', 'ph', 'city']
           const list = this.Waters
           const data = this.formatJson(filterVal, list)
-          export_json_to_excel(tHeader, data, '空气质量表')
+          export_json_to_excel(tHeader, data, '水质监测站数据')
           this.downloadLoading = false
         })
       },
@@ -90,7 +77,6 @@ export default {
   this.$axios.post(url)
   .then(res =>{
   this.Waters = res.data.content;
-  console.log(res.data.Water);
   
   })
   .catch(error =>{
